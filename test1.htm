@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Single page web app using Angularjs</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-sanitize.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<style>
+
+aprobe-data{
+  visibility: hidden;
+}
+code-data{
+  visibility: hidden;
+}
+</style>
+
+
+<script>
+console.log("Main");
+  var app=angular.module('single-page-app', ['ngRoute', 'ngSanitize']);
+  //var app=angular.module('single-page-app', ['ngRoute']);
+  
+  //---------------------------------------------------------------
+  app.controller('cfgController', function($scope){
+    
+    this.myAprobeData = [];
+    this.myCodeData = [];
+
+
+    $scope.setAprobeData = function (data) {
+      this.myAprobeData = data;
+      console.log("set data to: " + this.myAprobeData);
+    }
+
+    $scope.getAprobeData = function () {
+      return (this.myAprobeData);
+    }
+
+    $scope.setCodeData = function (data) {
+      this.myCodeData = data;
+      console.log("set data to: " + this.myCodeData);
+    }
+
+    $scope.getCodeData = function () {
+      return (this.myCodeData);
+    }        
+  });
+
+  //---------------------------------------------------------------
+  app.directive('aprobeData', function() {
+    return {
+      restrict : "E",
+      link: function (scope, element) {
+
+        console.log("Entered aprobeData directive");
+        console.log(scope);
+        console.log(element);
+        console.log(element.html());
+
+        var text=element.html();
+        var tlist=text.split("\n");
+
+        scope.setAprobeData(tlist);
+
+
+        
+      }
+    };
+  });
+//---------------------------------------------------------------
+  app.directive('aprobe', ['$sce', function($sce) {
+    return {
+      restrict : "E",
+      link: function (scope, element) {
+
+        console.log("Entered aprobe directive");
+
+        var d = scope.getAprobeData();
+
+        
+        var s=d.join("\n");
+
+        //for (var i = 0; i < d.length; i++) {
+          //console.log("d[i] is : " + d[i]);
+         // s += (i+1).toString() + d[i]  + "\n";
+        //}
+        scope.aprobe = $sce.trustAsHtml(s);
+
+        
+
+
+        
+      }
+    };
+  }]);
+//---------------------------------------------------------------
+  
+//---------------------------------------------------------------
+  app.directive('codeData', function() {
+    return {
+      restrict : "E",
+      link: function (scope, element) {
+
+        console.log("Entered CodeData directive");
+        console.log(scope);
+        console.log(element);
+        console.log(element.html());
+
+        var text=element.html();
+        var tlist=text.split("\n");
+
+        scope.setCodeData(tlist);
+
+
+        
+      }
+    };
+  });
+//---------------------------------------------------------------
+  app.directive('code', ['$sce', function($sce) {
+    return {
+      restrict : "E",
+      link: function (scope, element) {
+
+        console.log("Entered code directive");
+
+        var d = scope.getCodeData();
+
+        
+        var s=d.join("\n");
+
+        //for (var i = 0; i < d.length; i++) {
+          //console.log("d[i] is : " + d[i]);
+         // s += (i+1).toString() + d[i]  + "\n";
+        //}
+        scope.code = $sce.trustAsHtml(s);    
+       
+      }
+    };
+  }]);
+//---------------------------------------------------------------
+  
+</script>
+
+
+</head>
+<body ng-app="single-page-app" ng-controller="cfgController">
+
+<aprobe-data>
+Enter {
+  @1
+  @2
+  @3
+  @6
+Enter {
+  @10
+  @11
+  @15
+}
+</aprobe-data>
+
+<code-data>
+ function test (....) is
+
+ begin
+    -- comment
+    if A then
+       print b
+    end if;
+
+ end;
+
+ -- ---------------------------------------
+ function test2 (...) is
+ begin
+    -- code comment
+    a := 1;
+ end test2;
+
+</code-data>
+1
+<div class="container">
+<pre>
+  <aprobe class="aprobe" ng-bind-html="aprobe">
+  Aprobe
+  </aprobe>
+  <code class="code" ng-bind-html="code">
+    Code
+  </code>
+</pre>
+</div>
+
+  
+</body>
+</html>
